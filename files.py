@@ -6,7 +6,9 @@ class FileHandler():
             file = open(str(filename), "r")
         except IOError:
             return str(filename) + " not found"
-        output = file.read()
+
+        output = file.read().splitlines()
+
         file.close()
         return output
 
@@ -24,7 +26,11 @@ class FileHandler():
             file = open(str(filename), "r")
         except IOError:
             return str(filename) + " not found"
-        output = file.read()
+
+        output = list()
+        for i in file.readlines():
+            output.append(i)
+
         file.close()
         return output
 
@@ -42,7 +48,11 @@ class FileHandler():
             file = open(str(filename), "r")
         except IOError:
             return str(filename) + " not found"
-        output = file.read()
+
+        output = list()
+        for i in file.readlines():
+            output.append(i)
+
         file.close()
         return output
 
@@ -60,7 +70,11 @@ class FileHandler():
             file = open(str(filename), "r")
         except IOError:
             return str(filename) + " not found"
-        output = file.read()
+
+        output = list()
+        for i in file.readlines():
+            output.append(i)
+
         file.close()
         return output
 
@@ -78,7 +92,11 @@ class FileHandler():
             file = open(str(filename), "r")
         except IOError:
             return str(filename) + " not found"
-        output = file.read()
+
+        output = list()
+        for i in file.readlines():
+            output.append(i)
+
         file.close()
         return output
 
