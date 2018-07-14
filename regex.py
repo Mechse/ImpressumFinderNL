@@ -13,5 +13,5 @@ class Regex():
     def searchData(self, input):
         fh = FileHandler()
         for regex_input in fh.readRegex():
-            regex = re.compile(regex_input)
+            regex = re.compile("/"+regex_input+"/ig")
             return regex.findall(input)

@@ -19,4 +19,5 @@ for domain in domains:
         if fh.inFile("somethingFound.txt", domain) == -1:
             fh.writeSomethingFound(domain+"\n")
 
-    print(Regex().searchData(soup.prettify()))
+    for link in soup.find_all('a'):
+        print link.get('href')
