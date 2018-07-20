@@ -1,13 +1,26 @@
 import re
+import csv
 
 
-def IsInFile(file, finder):
+def IsInFile(file, finders):
+
     try:
-        checkFile = open(file, "r")
-        if checkFile.read().find(finder):
-            return True
-        else:
-            return False
+
+        with open(file, "r") as f:
+
+            reader = csv.reader(f, delimeter=",")
+
+            for row in reader:
+
+                for field in row:
+
+                    for finder in finders:
+
+                        if field == finder:
+
+                            return False
+
+        return True
     except:
         return False
 
@@ -18,10 +31,13 @@ def DataFinder(soup, params):
     for param in params:
 
         try:
+
             if soup.find(text=re.compile(param)) is not None:
+
                 out.append(soup.find(text=re.compile(param)))
+
         except:
-            out.append("")
+
             continue
 
     return out

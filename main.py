@@ -51,11 +51,11 @@ for imprint in imprints:
 
     if mainSoup.find_all(text=imprint) is not None:
 
-            email_out = f.DataFinder(mainSoup, emails)
+            emails_out = f.DataFinder(mainSoup, emails)
 
-            if f.IsInFile("data.csv", email_out) is not False:
-
-                outputWriter.writerow([str(websites[0]), email_out])
+            if f.IsInFile("data.csv", emails_out) and emails_out:
+                for email_out in emails_out:
+                    outputWriter.writerow([str(websites[0]), email_out])
 
     for undersite in undersites:
 
@@ -63,8 +63,8 @@ for imprint in imprints:
 
         if sideSoup.find_all(text=imprint) is not None:
 
-            email_out = f.DataFinder(sideSoup, emails)
+            emails_out = f.DataFinder(sideSoup, emails)
 
-            if f.IsInFile("data.csv", email_out) is not False:
-
-                outputWriter.writerow([str(websites[0]), email_out])
+            if f.IsInFile("data.csv", emails_out) and emails_out:
+                for email_out in emails_out:
+                    outputWriter.writerow([str(websites[0]), email_out])
