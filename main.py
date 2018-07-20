@@ -4,10 +4,11 @@ import csv
 import re
 import functions as f
 
-outputFile = open("data.csv", "wb")
-outputWriter = csv.writer(outputFile)
 
-websites = ["https://www.coa.nl/"]
+
+websites = ["https://www.coa.nl/",
+            "http://www.cultuurparticipatie.nl",
+            ]
 
 types = ["email", "tel", "zip", "city", "street"]
 
@@ -34,37 +35,55 @@ for type in types:
     elif(type == "street"):
         streets = file.read().splitlines()
 
-website = requests.get(websites[0]).text
-mainSoup = bs(website, "lxml")
-hyperlinks = mainSoup.select('a')
+for website in websites:
 
-undersites = list()
+    mainsite = requests.get(website).text
+    mainSoup = bs(mainsite, "lxml")
+    hyperlinks = mainSoup.select('a')
 
-for hyperlink in hyperlinks:
+    undersites = list()
 
-    try:
-        undersites.append(requests.get(websites[0]+hyperlink['href']).text)
-    except:
-        continue
+    for hyperlink in hyperlinks:
 
-for imprint in imprints:
+        try:
+            undersites.append(requests.get(website+hyperlink['href']).text)
+        except:
+            continue
 
-    if mainSoup.find_all(text=imprint) is not None:
+    for imprint in imprints:
 
-            emails_out = f.DataFinder(mainSoup, emails)
+        if mainSoup.find_all(text=imprint) is not None:
 
-            if f.IsInFile("data.csv", emails_out) and emails_out:
-                for email_out in emails_out:
-                    outputWriter.writerow([str(websites[0]), email_out])
+                emails_out = f.DataFinder(mainSoup, emails)
+                emails_out = f.DistinctList(emails_out)
 
-    for undersite in undersites:
+                if emails_out:
 
-        sideSoup = bs(undersite, "lxml")
+                    for email_out in emails_out:
 
-        if sideSoup.find_all(text=imprint) is not None:
+                        if not f.IsInFile("data.csv", email_out):
 
-            emails_out = f.DataFinder(sideSoup, emails)
+                            with open("data.csv", "a") as outputFile:
 
-            if f.IsInFile("data.csv", emails_out) and emails_out:
-                for email_out in emails_out:
-                    outputWriter.writerow([str(websites[0]), email_out])
+                                outputWriter = csv.writer(outputFile)
+                                outputWriter.writerow([str(website), email_out])
+
+        for undersite in undersites:
+
+            sideSoup = bs(undersite, "lxml")
+
+            if sideSoup.find_all(text=imprint) is not None:
+
+                emails_out = f.DataFinder(sideSoup, emails)
+                emails_out = f.DistinctList(emails_out)
+
+                if emails_out:
+
+                    for email_out in emails_out:
+
+                        if not f.IsInFile("data.csv", email_out):
+
+                            with open("data.csv", "a") as outputFile:
+
+                                outputWriter = csv.writer(outputFile)
+                                outputWriter.writerow([str(website), email_out])

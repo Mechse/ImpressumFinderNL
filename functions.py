@@ -2,27 +2,34 @@ import re
 import csv
 
 
-def IsInFile(file, finders):
+def IsInFile(file, finder):
 
-    try:
+    with open(file, "r") as f:
 
-        with open(file, "r") as f:
+        reader = csv.reader(f)
 
-            reader = csv.reader(f, delimeter=",")
+        for row in reader:
 
-            for row in reader:
+            for field in row:
 
-                for field in row:
+                if field == finder:
 
-                    for finder in finders:
+                    return True
 
-                        if field == finder:
+    return False
 
-                            return False
 
-        return True
-    except:
-        return False
+def MultipleIsInFile(file, params):
+
+    out = list()
+
+    for param in params:
+
+        if not IsInFile(file, param):
+
+            out.append(param)
+
+    return out
 
 
 def DataFinder(soup, params):
