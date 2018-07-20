@@ -1,23 +1,88 @@
-import db
-import http
-from regex import Regex
-from bs4 import BeautifulSoup
-from files import FileHandler
+import requests
+from bs4 import BeautifulSoup as bs
+import csv
+import re
+import functions
 
-fh = FileHandler()
-domains = db.getURLs(10)
-for domain in domains:
-    content = http.getContent(domain)
+outputFile = open("data.csv", "wb")
+outputWriter = csv.writer(outputFile)
+
+websites = ["https://www.coa.nl/"]
+
+types = ["email", "tel", "zip", "city", "street"]
+
+file = open("imprints.txt", "r")
+
+imprints = file.read().splitlines()
+
+for type in types:
+
+    file = open(type+".txt", "r")
+
+    if(type == "email"):
+        emails = file.read().splitlines()
+
+    elif(type == "tel"):
+        tels = file.read().splitlines()
+
+    elif(type == "zip"):
+        zips = file.read().splitlines()
+
+    elif(type == "city"):
+        cities = file.read().splitlines()
+
+    elif(type == "street"):
+        streets = file.read().splitlines()
+
+website = requests.get(websites[0]).text
+mainSoup = bs(website, "lxml")
+hyperlinks = mainSoup.select('a')
+
+undersites = list()
+
+for hyperlink in hyperlinks:
 
     try:
-        soup = BeautifulSoup(str(content), "lxml")
-    except TypeError:
-        print("Can't make soup.")
+        undersites.append(requests.get(websites[0]+hyperlink['href']).text)
+    except:
         continue
 
-    if Regex().searchImprints(soup.prettify()):
-        if fh.inFile("somethingFound.txt", domain) == -1:
-            fh.writeSomethingFound(domain+"\n")
+for imprint in imprints:
 
-    for link in soup.find_all('a'):
-        print link.get('href')
+    if mainSoup.find_all(text=imprint) is not None:
+
+        for email in emails:
+
+            email_out = ""
+
+            try:
+                if mainSoup.find(text=re.compile(email)) is not None:
+                    email_out = mainSoup.find(text=re.compile(email))
+            except:
+                email_out = ""
+                continue
+
+            if functions.IsInFile("data.csv", email_out) is not False:
+
+                outputWriter.writerow([str(websites[0]), email_out])
+
+    for undersite in undersites:
+
+        sideSoup = bs(undersite, "lxml")
+
+        if sideSoup.find_all(text=imprint) is not None:
+
+            for email in emails:
+
+                email_out = ""
+
+                try:
+                    if sideSoup.find(text=re.compile(email)) is not None:
+                            email_out = sideSoup.find(text=re.compile(email))
+                except:
+                    email_out = ""
+                    continue
+
+            if functions.IsInFile("data.csv", email_out) is not False:
+
+                outputWriter.writerow([str(websites[0]), email_out])
