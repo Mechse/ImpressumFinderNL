@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup as bs
 import csv
 import re
-import functions
+import functions as f
 
 outputFile = open("data.csv", "wb")
 outputWriter = csv.writer(outputFile)
@@ -51,18 +51,9 @@ for imprint in imprints:
 
     if mainSoup.find_all(text=imprint) is not None:
 
-        for email in emails:
+            email_out = f.DataFinder(mainSoup, emails)
 
-            email_out = ""
-
-            try:
-                if mainSoup.find(text=re.compile(email)) is not None:
-                    email_out = mainSoup.find(text=re.compile(email))
-            except:
-                email_out = ""
-                continue
-
-            if functions.IsInFile("data.csv", email_out) is not False:
+            if f.IsInFile("data.csv", email_out) is not False:
 
                 outputWriter.writerow([str(websites[0]), email_out])
 
@@ -72,17 +63,8 @@ for imprint in imprints:
 
         if sideSoup.find_all(text=imprint) is not None:
 
-            for email in emails:
+            email_out = f.DataFinder(sideSoup, emails)
 
-                email_out = ""
-
-                try:
-                    if sideSoup.find(text=re.compile(email)) is not None:
-                            email_out = sideSoup.find(text=re.compile(email))
-                except:
-                    email_out = ""
-                    continue
-
-            if functions.IsInFile("data.csv", email_out) is not False:
+            if f.IsInFile("data.csv", email_out) is not False:
 
                 outputWriter.writerow([str(websites[0]), email_out])
