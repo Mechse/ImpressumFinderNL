@@ -1,7 +1,6 @@
 import requests
 from bs4 import BeautifulSoup as bs
 import csv
-import re
 import functions as f
 
 
@@ -46,44 +45,48 @@ for website in websites:
     for hyperlink in hyperlinks:
 
         try:
+
             undersites.append(requests.get(website+hyperlink['href']).text)
+
         except:
+
             continue
+
+    emails_out = list()
+    tels_out = list()
+    zips_out = list()
+    cities_out = list()
+    streets_out = list()
 
     for imprint in imprints:
 
+        newLine = list()
+
         if mainSoup.find_all(text=imprint) is not None:
 
-                emails_out = f.DataFinder(mainSoup, emails)
-                emails_out = f.DistinctList(emails_out)
-
-                if emails_out:
-
-                    for email_out in emails_out:
-
-                        if not f.IsInFile("data.csv", email_out):
-
-                            with open("data.csv", "a") as outputFile:
-
-                                outputWriter = csv.writer(outputFile)
-                                outputWriter.writerow([str(website), email_out])
+                emails_out = f.OutputCollector(emails, mainSoup, emails_out)
+                tels_out = f.OutputCollector(tels, mainSoup, tels_out)
+                zips_out = f.OutputCollector(zips, mainSoup, zips_out)
+                cities_out = f.OutputCollector(cities, mainSoup, cities_out)
+                streets_out = f.OutputCollector(streets, mainSoup, streets_out)
 
         for undersite in undersites:
+
+            newLine = list()
 
             sideSoup = bs(undersite, "lxml")
 
             if sideSoup.find_all(text=imprint) is not None:
 
-                emails_out = f.DataFinder(sideSoup, emails)
-                emails_out = f.DistinctList(emails_out)
+                emails_out = f.OutputCollector(emails, sideSoup, emails_out)
+                tels_out = f.OutputCollector(tels, sideSoup, tels_out)
+                zips_out = f.OutputCollector(zips, sideSoup, zips_out)
+                cities_out = f.OutputCollector(cities, sideSoup, cities_out)
+                streets_out = f.OutputCollector(streets, sideSoup, streets_out)
 
-                if emails_out:
+    emails_out = f.DistinctList(emails_out)
 
-                    for email_out in emails_out:
+    with open("data.csv", "a") as outputFile:
 
-                        if not f.IsInFile("data.csv", email_out):
-
-                            with open("data.csv", "a") as outputFile:
-
-                                outputWriter = csv.writer(outputFile)
-                                outputWriter.writerow([str(website), email_out])
+        outputWriter = csv.writer(outputFile)
+        outputWriter.writerow([website, emails_out, tels_out, zips_out, cities_out, streets_out])
