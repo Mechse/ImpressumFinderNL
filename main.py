@@ -4,11 +4,7 @@ import csv
 import functions as f
 import db
 
-
-
-websites = ["https://www.coa.nl/",
-            "http://www.cultuurparticipatie.nl",
-            ]
+websites = db.GetDomains("SELECT * FROM host WHERE name!='' ORDER BY id LIMIT 100")
 
 types = ["email", "tel", "zip", "city", "street"]
 
@@ -37,7 +33,26 @@ for type in types:
 
 for website in websites:
 
-    mainsite = requests.get(website).text
+    try:
+
+        mainsite = requests.get(website).text
+
+    except:
+
+        try:
+
+            mainsite = requests.get("http://"+website).text
+
+        except:
+
+            try:
+
+                mainsite = requests.get("https://"+website).text
+
+            except:
+
+                continue
+
     mainSoup = bs(mainsite, "lxml")
     hyperlinks = mainSoup.select('a')
 

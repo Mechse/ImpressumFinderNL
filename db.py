@@ -1,9 +1,9 @@
 import MySQLdb
 
-db = MySQLdb.connect(host="",           # your host, usually localhost
+db = MySQLdb.connect(host="",                   # your host, usually localhost
                      user="",                   # your username
-                     passwd="",   # your password
-                     db="")                     # name of the data base
+                     passwd="",                 # your password
+                     db="")                 # name of the data base
 
 
 def GetDomains(sql):
@@ -14,4 +14,6 @@ def GetDomains(sql):
     cur.execute(sql)
 
     for row in cur.fetchall():
-        domains.append(row)
+        domains.append(row[1])
+
+    return domains
