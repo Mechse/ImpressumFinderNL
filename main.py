@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup as bs
 import csv
 import functions as f
+import db
 
 
 
