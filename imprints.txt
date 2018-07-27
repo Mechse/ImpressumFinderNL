@@ -2,3 +2,11 @@ contact
 Contact
 contacts
 Contacts
+afdruk
+Afdruk
+Over ons
+over ons
+Klantenservice
+klantenservice
+Bedrijfsgegevens
+bedrijfsgegevens

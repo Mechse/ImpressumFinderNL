@@ -49,7 +49,6 @@ def DataFinder(soup, params):
 
     return out
 
-
 def DistinctList(list):
 
     checked = []
