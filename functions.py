@@ -49,6 +49,7 @@ def DataFinder(soup, params):
 
     return out
 
+
 def DistinctList(list):
 
     checked = []
@@ -77,3 +78,10 @@ def OutputCollector(params, soup, output_list):
                 output_list.append(param_out)
 
     return output_list
+
+
+def FileOpener(type):
+
+    file = open(type+".txt", "r")
+
+    return file.read().splitlines()

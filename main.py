@@ -6,30 +6,17 @@ import db
 
 websites = db.GetDomains("SELECT * FROM host WHERE name!='' ORDER BY id LIMIT 100")
 
-types = ["email", "tel", "zip", "city", "street"]
+imprints = f.FileOpener("imprints")
 
-file = open("imprints.txt", "r")
+filesData = {
+                "email": f.FileOpener("email"),
+                "tel": f.FileOpener("tel"),
+                "zip": f.FileOpener("zip"),
+                "city": f.FileOpener("city"),
+                "street": f.FileOpener("street"),
+            }
 
-imprints = file.read().splitlines()
-
-for type in types:
-
-    file = open(type+".txt", "r")
-
-    if(type == "email"):
-        emails = file.read().splitlines()
-
-    elif(type == "tel"):
-        tels = file.read().splitlines()
-
-    elif(type == "zip"):
-        zips = file.read().splitlines()
-
-    elif(type == "city"):
-        cities = file.read().splitlines()
-
-    elif(type == "street"):
-        streets = file.read().splitlines()
+prefixes = f.FileOpener("prefix")
 
 for website in websites:
 
@@ -80,11 +67,11 @@ for website in websites:
 
         if mainSoup.find_all(text=imprint) is not None:
 
-                emails_out = f.OutputCollector(emails, mainSoup, emails_out)
-                tels_out = f.OutputCollector(tels, mainSoup, tels_out)
-                zips_out = f.OutputCollector(zips, mainSoup, zips_out)
-                cities_out = f.OutputCollector(cities, mainSoup, cities_out)
-                streets_out = f.OutputCollector(streets, mainSoup, streets_out)
+                emails_out = f.OutputCollector(filesData["email"], mainSoup, emails_out)
+                tels_out = f.OutputCollector(filesData["tel"], mainSoup, tels_out)
+                zips_out = f.OutputCollector(filesData["zip"], mainSoup, zips_out)
+                cities_out = f.OutputCollector(filesData["city"], mainSoup, cities_out)
+                streets_out = f.OutputCollector(filesData["street"], mainSoup, streets_out)
 
         for undersite in undersites:
 
@@ -94,11 +81,11 @@ for website in websites:
 
             if sideSoup.find_all(text=imprint) is not None:
 
-                emails_out = f.OutputCollector(emails, sideSoup, emails_out)
-                tels_out = f.OutputCollector(tels, sideSoup, tels_out)
-                zips_out = f.OutputCollector(zips, sideSoup, zips_out)
-                cities_out = f.OutputCollector(cities, sideSoup, cities_out)
-                streets_out = f.OutputCollector(streets, sideSoup, streets_out)
+                    emails_out = f.OutputCollector(filesData["email"], sideSoup, emails_out)
+                    tels_out = f.OutputCollector(filesData["tel"], sideSoup, tels_out)
+                    zips_out = f.OutputCollector(filesData["zip"], sideSoup, zips_out)
+                    cities_out = f.OutputCollector(filesData["city"], sideSoup, cities_out)
+                    streets_out = f.OutputCollector(filesData["street"], sideSoup, streets_out)
 
     emails_out = f.DistinctList(emails_out)
 
